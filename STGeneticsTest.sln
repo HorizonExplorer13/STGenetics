@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STGeneticsTest.Server", "Server\STGeneticsTest.Server.csproj", "{613CF06C-6407-49BC-9654-ECF30F6798E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "STGeneticsTest.Server", "Server\STGeneticsTest.Server.csproj", "{613CF06C-6407-49BC-9654-ECF30F6798E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STGeneticsTest.Client", "Client\STGeneticsTest.Client.csproj", "{0FD593BA-EF6E-4B44-B17E-2313CD0CB197}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "STGeneticsTest.Client", "Client\STGeneticsTest.Client.csproj", "{0FD593BA-EF6E-4B44-B17E-2313CD0CB197}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STGeneticsTest.Shared", "Shared\STGeneticsTest.Shared.csproj", "{F64201B2-D06C-47CA-B62D-076263DCD687}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "STGeneticsTest.Shared", "Shared\STGeneticsTest.Shared.csproj", "{F64201B2-D06C-47CA-B62D-076263DCD687}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

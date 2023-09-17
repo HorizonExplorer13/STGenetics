@@ -1,8 +1,14 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using STGeneticsTest.Server;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllersWithViews().AddJsonOptions(opciones =>
+    opciones.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer("name=DefaultConnection"));
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

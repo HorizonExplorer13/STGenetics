@@ -1,0 +1,351 @@
+﻿@page "/AnimalStorage"
+@inject HttpClient http
+@using STGeneticsTest.Shared.DTO;
+@using STGeneticsTest.Shared.Entities;
+@using System.Text.Json;
+@using System.Text;
+
+<h3>AnimalStorage</h3>
+
+<form @onsubmit="FilterData">
+    <div>
+        <label for="nameInput">Name:</label>
+        <input id="nameInput" @bind="selectedName" @oninput="SearchNames" />
+        @if (showNameDropdown)
+        {
+            <ul class="name-dropdown">
+                @foreach (var name in filteredNames)
+                {
+                    <li @onclick="@(() => SelectByName(name))">@name</li>
+                }
+            </ul>
+        }
+    </div>
+
+    <div>
+        <label for="BreedSelect">Breed:</label>
+        <input id="BreedSelect" @bind="selectedBreed" @oninput="SearchBreed" />
+        @if (showBreedDropdown)
+        {
+            <ul class="breed-dropdown">
+                @foreach (var Name in filteredBreeds)
+                {
+                    <li @onclick="@(() => SelectBreed(Name))">@Name</li>
+                }
+            </ul>
+        }
+    </div>
+
+    <div>
+        <label for="datePicker">Fecha:</label>
+        <InputDate id="datePicker" @bind-Value="selectedDate" />
+
+        <label for="startDatePicker">Fecha de inicio:</label>
+        <InputDate id="startDatePicker" @bind-Value="startDate" />
+
+        <label for="endDatePicker">Fecha de fin:</label>
+        <InputDate id="endDatePicker" @bind-Value="endDate" />
+    </div>
+
+    <div>
+        <label for="sexSelect">Sex:</label>
+        <select id="sexSelect" @bind="selectedSex">
+            <option value="">Select...</option>
+            @foreach (var sex in sex)
+            {
+                <option value="@sex.SexId">@sex.Name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="PriceInput">Prize:</label>
+        <input id="PriceInput" type="number" @bind="DefinedPrize"/>
+
+        <label for="minPriceInput">Precio Mínimo:</label>
+        <input id="minPriceInput" type="number" @bind="minPrice" />
+
+        <label for="maxPriceInput">Precio Máximo:</label>
+        <input id="maxPriceInput" type="number" @bind="maxPrice" />
+    </div>
+
+
+    <div>
+        <label for="statusSelect">Status:</label>
+        <select id="statusSelect" @bind="selectedStatus">
+            <option value="">Select...</option>
+            @foreach (var status in status)
+            {
+                <option value="@status.StatusId">@status.Name</option>
+            }
+        </select>
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Raza</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Sexo</th>
+            <th>Precio</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var animal in filterlist)
+        {
+            <tr>
+                <td>@animal.Name</td>
+                <td>@animal.Breed</td>
+                <td>@animal.BirthDate.ToShortDateString()</td>
+                <td>@animal.Sex</td>
+                <td>@animal.Price</td>
+                <td>@animal.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private int? selectedSex;
+    private int? selectedStatus;
+    private string? selectedName;
+    private string? selectedBreed;
+
+    private decimal? DefinedPrize;
+    private decimal? minPrice; 
+    private decimal? maxPrice; 
+
+    private List<string> AnimalNames = new List<string>();
+    private bool showNameDropdown = false;
+    private List<string> filteredNames = new List<string>();
+
+    private List<string> breeds = new List<string>();
+    private bool showBreedDropdown = false;
+    private List<string> filteredBreeds = new List<string>();
+
+    private DateTime? selectedDate;  
+    private DateTime? startDate;    
+    private DateTime? endDate;
+
+    private List<Sex> sex = new List<Sex>();
+    private List<Status> status = new List<Status>();
+
+    private List<AnimalDatatoShowDTO> filterlist = new List<AnimalDatatoShowDTO>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        AnimalNames = await GetNames();
+        breeds = await GetBreeds();
+        sex = await GetSex();
+        status = await GetStatus();
+        filterlist = await GetInitData();
+
+    }
+
+    public async Task FilterData()
+    {
+
+        Console.WriteLine(selectedName);
+        Console.WriteLine(selectedBreed);
+        Console.WriteLine(selectedDate);
+        Console.WriteLine(selectedSex);
+        Console.WriteLine(selectedStatus);
+        filterlist = new List<AnimalDatatoShowDTO>();
+        var filterdata = new FilterDataDTO
+        {
+            Name = selectedName,
+            Breed = selectedBreed,
+            BirthDate = selectedDate,
+            SexId = selectedSex,
+            Price = DefinedPrize,
+            StatusId = selectedStatus
+
+        };
+        var filterDataJson  = JsonSerializer.Serialize(filterdata);
+        var FilteredData = new StringContent(filterDataJson, Encoding.UTF8, "application/json");
+      
+        var httpresponse = await http.PostAsync("api/AnimalLogs/FilterData", FilteredData);
+        if (httpresponse.IsSuccessStatusCode)
+        {
+            var httpcontent = await httpresponse.Content.ReadAsStringAsync();
+            var filterData = JsonSerializer.Deserialize<List<AnimalDatatoShowDTO>>(httpcontent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            filterlist = filterData;
+        }
+        else
+        {
+            Console.WriteLine($"Error: {httpresponse.StatusCode}");
+        }
+
+
+    }
+
+    public async Task<List<AnimalDatatoShowDTO>> GetInitData()
+    {
+        var httpresponse = await http.GetAsync("api/AnimalLogs/GetData");
+        if (httpresponse.IsSuccessStatusCode)
+        {
+            var httpcontent = await httpresponse.Content.ReadAsStringAsync();
+            var animallist = JsonSerializer.Deserialize<List<AnimalDatatoShowDTO>>(httpcontent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            return animallist;
+        }
+        else
+        {
+            Console.WriteLine("Error deserializing the object");
+            return new List<AnimalDatatoShowDTO>();
+        }
+    }
+
+    public async Task<List<Sex>> GetSex()
+    {
+        var httpResponse = await http.GetAsync("api/Utils/Sex");
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            var httpcontent = await httpResponse.Content.ReadAsStringAsync();
+            var sexlist = JsonSerializer.Deserialize<List<Sex>>(httpcontent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            return sexlist;
+        }
+        else
+        {
+            Console.WriteLine("Error deserializing the object");
+            return new List<Sex>();
+        }
+    }
+
+    public async Task<List<Status>> GetStatus()
+    {
+        var httpResponse = await http.GetAsync("api/Utils/Status");
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            var httpcontent = await httpResponse.Content.ReadAsStringAsync();
+            var statuslist = JsonSerializer.Deserialize<List<Status>>(httpcontent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            return statuslist;
+        }
+        else
+        {
+            Console.WriteLine("Error deserializing the object");
+            return new List<Status>();
+        }
+    }
+
+
+
+    public async Task<List<string>> GetNames()
+    {
+        var httpResponse = await http.GetAsync("api/AnimalLogs/GetNameslist");
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            var httpcontent = await httpResponse.Content.ReadAsStringAsync();
+            var nameslist = JsonSerializer.Deserialize<List<string>>(httpcontent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            return nameslist;
+        }
+        else
+        {
+            Console.WriteLine("Error deserializing the object");
+            return new List<string>();
+        }
+    }
+
+    public async Task<List<string>> GetBreeds()
+    {
+        var httpResponse = await http.GetAsync("api/BreedLogs/GetBreedNames");
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            var httpcontent = await httpResponse.Content.ReadAsStringAsync();
+            var breedlist = JsonSerializer.Deserialize<List<string>>(httpcontent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            return breedlist;
+        }
+        else
+        {
+            Console.WriteLine("Error deserializing the object");
+            return new List<string>();
+        }
+    }
+
+
+
+
+
+    private void SearchNames(ChangeEventArgs e)
+    {
+        selectedName = e.Value.ToString();
+        if (!string.IsNullOrWhiteSpace(selectedName))
+        {
+            filteredNames = AnimalNames
+                .Where(name => name.StartsWith(selectedName, StringComparison.OrdinalIgnoreCase))
+                .Take(3) 
+                .ToList();
+            showNameDropdown = true;
+        }
+        else
+        {
+            filteredNames.Clear();
+            showNameDropdown = false;
+        }
+    }
+
+    private void SelectByName(string name)
+    {
+        selectedName = name;
+        showNameDropdown = false;
+    }
+
+    private void SearchBreed(ChangeEventArgs e)
+    {
+        selectedBreed = e.Value.ToString();
+        if (!string.IsNullOrWhiteSpace(selectedBreed))
+        {
+            filteredBreeds = breeds
+                .Where(Name => Name.StartsWith(selectedBreed, StringComparison.OrdinalIgnoreCase))
+                .Take(3)
+                .ToList();
+            showBreedDropdown = true;
+        }
+        else
+        {
+            filteredBreeds.Clear();
+            showBreedDropdown = false;
+        }
+    }
+
+    private void SelectBreed(string Name)
+    {
+        selectedBreed = Name;
+        showBreedDropdown = false;
+    }
+    public void Filtrar()
+    {
+
+    }
+
+}
+    
+
+

@@ -1,0 +1,11 @@
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\bin\Debug\net7.0\STGeneticsTest.Shared.deps.json
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\bin\Debug\net7.0\STGeneticsTest.Shared.dll
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\bin\Debug\net7.0\STGeneticsTest.Shared.pdb
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\obj\Debug\net7.0\STGeneticsTest.Shared.GeneratedMSBuildEditorConfig.editorconfig
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\obj\Debug\net7.0\STGeneticsTest.Shared.AssemblyInfoInputs.cache
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\obj\Debug\net7.0\STGeneticsTest.Shared.AssemblyInfo.cs
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\obj\Debug\net7.0\STGeneticsTest.Shared.csproj.CoreCompileInputs.cache
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\obj\Debug\net7.0\STGeneticsTest.Shared.dll
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\obj\Debug\net7.0\refint\STGeneticsTest.Shared.dll
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\obj\Debug\net7.0\STGeneticsTest.Shared.pdb
+D:\C#VS22\STGenetics\STGeneticsTest\Shared\obj\Debug\net7.0\ref\STGeneticsTest.Shared.dll
