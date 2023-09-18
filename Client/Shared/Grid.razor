@@ -1,0 +1,38 @@
+﻿@using STGeneticsTest.Shared.DTO;
+@using System.Text.Json;
+@inject HttpClient http
+<h3>Grid</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Raza</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Sexo</th>
+            <th>Precio</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var animal in FilteredData)
+        {
+            <tr>
+                <td>@animal.Name</td>
+                <td>@animal.Breed</td>
+                <td>@animal.BirthDate.ToShortDateString()</td>
+                <td>@animal.Sex</td>
+                <td>@animal.Price</td>
+                <td>@animal.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    [Parameter]
+    public List<AnimalDatatoShowDTO> FilteredData { get; set; }
+  
+    
+}

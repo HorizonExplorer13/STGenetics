@@ -45,6 +45,10 @@ namespace STGeneticsTest.Server.Controllers
             try
             {
                 var filteredData = await GetFilterData(FilteredData);
+                if(filteredData is null)
+                {
+                    return BadRequest();
+                }
                 return filteredData; 
             }
             catch (Exception ex)
@@ -70,7 +74,7 @@ namespace STGeneticsTest.Server.Controllers
             var query = dBContext.Animals.AsQueryable();
             if (filterData != null)
             {
-                query = query.Include(b => b.Breed).Include(s => s.Sex).Include(st => st.Status).Where(x =>
+                    query = query.Include(b => b.Breed).Include(s => s.Sex).Include(st => st.Status).Where(x =>
                  (string.IsNullOrEmpty(filterData.Name) || x.Name.Contains(filterData.Name))
                 && (string.IsNullOrEmpty(filterData.Breed) || x.BreedId.Equals(BreedId))
                 && (!filterData.BirthDate.HasValue || x.BirthDate == filterData.BirthDate)
