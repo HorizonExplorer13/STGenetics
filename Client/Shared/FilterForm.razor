@@ -149,7 +149,7 @@
         var filterDataJson = JsonSerializer.Serialize(filterdata);
         var FilteredData = new StringContent(filterDataJson, Encoding.UTF8, "application/json");
 
-        var httpresponse = await http.PostAsync("api/AnimalLogs/FilterData", FilteredData);
+            var httpresponse = await http.PostAsync("api/AnimalLogs/FilterData", FilteredData);
         if (httpresponse.IsSuccessStatusCode)
         {
             var httpcontent = await httpresponse.Content.ReadAsStringAsync();
